@@ -16,7 +16,7 @@ public class Administrator {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idadmin", columnDefinition = "INT(10) UNSIGNED")
     public Integer idadmin;
-    @Column(name = "usernae", columnDefinition = "VARCHAR")
+    @Column(name = "username", columnDefinition = "VARCHAR")
     public String username;
     @Column(name = "password", columnDefinition = "VARCHAR")
     public String password;
