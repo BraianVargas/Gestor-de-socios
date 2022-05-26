@@ -1,0 +1,3 @@
+SECRET_KEY='KJDSLKF78AShkjoasd2LJdyfus8'
+SQLALCHEMY_DATABASE_URI = 'mysql://rooot:@localhost/api_socios'
+SQLALCHEMY_TRACK_MODIFICATIONS = False

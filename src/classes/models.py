@@ -1,5 +1,4 @@
 from __main__ import app
-from email.policy import default
 from flask_sqlalchemy import SQLAlchemy
 import datetime
 
@@ -16,8 +15,11 @@ class personClass(db.Model):
     phone = db.Column(db.String(80), nullable=False)
     email = db.Column(db.String(80), nullable=False)
     
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow)
+    debts = db.relationship('debtsClass', backref='person')
+    family = db.relationship('familyClass', backref='person')
+         
+    created_at = db.Column(db.DateTime, default=datetime.datetime.now())
+    updated_at = db.Column(db.DateTime, default=datetime.datetime.now())
     deleted_at = db.Column(db.DateTime, nullable=True)
 
     def __init__(self, name, lastname, age, address, dni, phone, email):
@@ -39,9 +41,10 @@ class socioClass(personClass, db.Model):
     withDebt = db.Column(db.Boolean, nullable = False)
     debts = db.relationship('debtClass', backref='socio', lazy=True)
     typeSocio= db.Column(db.String(80), nullable = False)
+    personId = db.Column(db.Integer, db.ForeignKey('person.id'), nullable=False)
     
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.now())
+    updated_at = db.Column(db.DateTime, default=datetime.datetime.now())
     deleted_at = db.Column(db.DateTime, nullable=True)
 
     def __init__(self, name, lastname, age, address, dni, phone, email, wayToPay, permission, family, withDebt, debt, typeSocio):
@@ -56,13 +59,15 @@ class socioClass(personClass, db.Model):
 class familyClass(personClass, db.Model):
     __tablename__ = 'family'
     id = db.Column(db.Integer, primary_key=True)
-    familyId = db.Column(db.Integer, db.foreign_key('socio.id'), nullable=False)
+    familyId = db.Column(db.Integer, db.ForeignKey('socio.id'), nullable=False)
+    PersonId = db.Column(db.Integer, db.ForeignKey('person.id'), nullable=False)
+
     relationship = db.Column(db.String(80), nullable=False)
     permissions = db.Column(db.String(80), nullable=False)
     typeSocio= db.Column(db.String(80), nullable = False)
 
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.now())
+    updated_at = db.Column(db.DateTime, default=datetime.datetime.now())
     deleted_at = db.Column(db.DateTime, nullable=True)
 
     def __init__(self, name, lastname, age, address, dni, phone, email, familyId, relationship, permissions, typeSocio):
@@ -77,15 +82,15 @@ class debtsClass(db.Model):
     __tablename__ = 'debts'
     id = db.Column(db.Integer, primary_key = True)
     amount = db.Column(db.Integer, nullable=False)
-    debtorId = db.Column(db.Integer, db.foreign_key('socio.id'), nullable=False)
+    debtorId = db.Column(db.Integer, db.ForeignKey('socio.id'), nullable=False)
     reazon = db.Column(db.String(80), nullable=False)
     dateOfDebt = db.Column(db.DateTime, nullable=False)
     state = db.Column(db.String(80), nullable=False)
     pays = db.relationship('payClass', backref='debts', lazy=True)
     dueDebt = db.Column(db.DateTime, nullable = False)
 
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.now())
+    updated_at = db.Column(db.DateTime, default=datetime.datetime.now())
     deleted_at = db.Column(db.DateTime, nullable=True)
 
     def __init__(self, amount, debtorId, reazon, dateOfDebt, state, dueDebt):
@@ -100,12 +105,12 @@ class payClass(db.Model):
     __tablename__ = 'pay'
     id = db.Column(db.Integer, primary_key = True)
     amount = db.Column(db.Integer, nullable=False)
-    payerId = db.Column(db.Integer, db.foreign_key('socio.id'), nullable=False)
+    payerId = db.Column(db.Integer, db.ForeignKey('socio.id'), nullable=False)
     dateOfPay = db.Column(db.DateTime, nullable=False)
-    debtId = db.Column(db.Integer, db.foreign_key('debts.id'), nullable=False)
+    debtId = db.Column(db.Integer, db.ForeignKey('debts.id'), nullable=False)
 
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.now())
+    updated_at = db.Column(db.DateTime, default=datetime.datetime.now())
     deleted_at = db.Column(db.DateTime, nullable=True)
 
     def __init__(self, amount, payerId, dateOfPay, debtId):
@@ -123,8 +128,8 @@ class User(db.Model):
     socio_id = db.Column(db.Integer, db.ForeignKey('socio.id'), nullable=False)
     
 
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.now())
+    updated_at = db.Column(db.DateTime, default=datetime.datetime.now())
     deleted_at = db.Column(db.DateTime, nullable=True)
     is_deleted = db.Column(db.Boolean, default=False)
     is_active = db.Column(db.Boolean, default=True)
